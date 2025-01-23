@@ -29,7 +29,8 @@ class DbHelper {
   }
 
   static Future<Database> _openDatabase() async {
-    final io.Directory appDocumentsDir = await path_provider.getApplicationSupportDirectory();
+    final io.Directory appDocumentsDir =
+        await path_provider.getApplicationSupportDirectory();
     dataBasePath = join(appDocumentsDir.path, "databases", "mydb.db");
     if (io.Platform.isWindows || io.Platform.isMacOS || io.Platform.isLinux) {
       var databaseFactory = databaseFactoryFfi;
