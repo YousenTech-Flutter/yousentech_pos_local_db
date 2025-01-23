@@ -6,15 +6,15 @@ import 'package:path/path.dart';
 import 'dart:io' as io;
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:sqflite/sqflite.dart';
-// import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'create_local_db_tables.dart';
 
 class DbHelper {
   static DbHelper? _instance;
   static Database? db;
-  static String ?dataBasePath;
-  static String ?backupPath;
+  static String? dataBasePath;
+  static String? backupPath;
 
   DbHelper._();
 
@@ -27,30 +27,42 @@ class DbHelper {
   static Future<io.Directory> dbPath() async {
     return await path_provider.getApplicationSupportDirectory();
   }
+
   static Future<Database> _openDatabase() async {
-    // var databaseFactory = databaseFactoryFfi;
     final io.Directory appDocumentsDir = await path_provider.getApplicationSupportDirectory();
     dataBasePath = join(appDocumentsDir.path, "databases", "mydb.db");
-
+    if (io.Platform.isWindows || io.Platform.isMacOS || io.Platform.isLinux) {
+      var databaseFactory = databaseFactoryFfi;
+      return await databaseFactory.openDatabase(
+        dataBasePath!,
+        options: OpenDatabaseOptions(
+          version: 38,
+          onCreate: (Database dbx, int version) async {
+            db = dbx;
+            await DBHelper.createDBTables();
+          },
+          onUpgrade: (Database dbx, int oldVersion, int newVersion) async {
+            await _migrateDatabase(dbx, oldVersion, newVersion);
+          },
+        ),
+      );
+    } else if (io.Platform.isAndroid || io.Platform.isIOS) {}
     return await openDatabase(
       dataBasePath!,
-      // options: OpenDatabaseOptions(
-        version: 38,
-        onCreate: (Database dbx, int version) async {
-          db = dbx;
-          await DBHelper.createDBTables();
-        },
-        onUpgrade: (Database dbx, int oldVersion, int newVersion) async {
-          await _migrateDatabase(dbx, oldVersion, newVersion);
-        },
-      // ),
+      version: 38,
+      onCreate: (Database dbx, int version) async {
+        db = dbx;
+        await DBHelper.createDBTables();
+      },
+      onUpgrade: (Database dbx, int oldVersion, int newVersion) async {
+        await _migrateDatabase(dbx, oldVersion, newVersion);
+      },
     );
   }
 
   static Future<void> _migrateDatabase(
       Database dbx, int oldVersion, int newVersion) async {
-    if (oldVersion < 38) {
-    }
+    if (oldVersion < 38) {}
   }
 
   static Future<void> backupDatabase() async {
