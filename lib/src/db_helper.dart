@@ -5,7 +5,8 @@ import 'dart:typed_data';
 import 'package:path/path.dart';
 import 'dart:io' as io;
 import 'package:path_provider/path_provider.dart' as path_provider;
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite/sqflite.dart';
+// import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'create_local_db_tables.dart';
 
@@ -26,15 +27,14 @@ class DbHelper {
   static Future<io.Directory> dbPath() async {
     return await path_provider.getApplicationSupportDirectory();
   }
-
   static Future<Database> _openDatabase() async {
-    var databaseFactory = databaseFactoryFfi;
+    // var databaseFactory = databaseFactoryFfi;
     final io.Directory appDocumentsDir = await path_provider.getApplicationSupportDirectory();
     dataBasePath = join(appDocumentsDir.path, "databases", "mydb.db");
 
-    return await databaseFactory.openDatabase(
+    return await openDatabase(
       dataBasePath!,
-      options: OpenDatabaseOptions(
+      // options: OpenDatabaseOptions(
         version: 38,
         onCreate: (Database dbx, int version) async {
           db = dbx;
@@ -43,7 +43,7 @@ class DbHelper {
         onUpgrade: (Database dbx, int oldVersion, int newVersion) async {
           await _migrateDatabase(dbx, oldVersion, newVersion);
         },
-      ),
+      // ),
     );
   }
 
