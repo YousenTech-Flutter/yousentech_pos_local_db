@@ -23,6 +23,7 @@ import 'package:yousentech_pos_local_db/src/general_local_db.dart';
 
 class DBHelper {
   static createDBTables() async {
+
     await createDBTable<RemoteSupportTicket>(fromJson:RemoteSupportTicket.fromJson , structure : LocalDatabaseStructure.notificationStructure);
     await createDBTable<Customer>(fromJson:Customer.fromJson , structure : LocalDatabaseStructure.customerStructure);
     await createDBTable<PosCategory>(fromJson:PosCategory.fromJson, structure : LocalDatabaseStructure.posCategoryStructure);
