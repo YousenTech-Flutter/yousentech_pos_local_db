@@ -1,7 +1,8 @@
-
+import 'package:get/get.dart';
 import 'package:shared_widgets/shared_widgets/handle_exception_helper.dart';
 // import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:yousentech_pos_loading_synchronizing_data/yousentech_pos_loading_synchronizing_data.dart';
 import 'package:yousentech_pos_local_db/src/db_helper.dart';
 
 class GeneralLocalDB<T> {
@@ -11,13 +12,13 @@ class GeneralLocalDB<T> {
 
   GeneralLocalDB._({required this.fromJson}) {
     // change
-    // _loadingItemsCountController.resetLoadingItemCount();
+    _loadingItemsCountController.resetLoadingItemCount();
     //===
     tableName = T.toString().toLowerCase();
   }
   // change
-  // final LoadingItemsCountController _loadingItemsCountController =
-  //     Get.put(LoadingItemsCountController());
+  final LoadingItemsCountController _loadingItemsCountController =
+      Get.put(LoadingItemsCountController());
   //===
   static GeneralLocalDB? getInstance<T>({required fromJsonFun}) {
     if (_instance != null && _instance!.getType() != T.toString()) {
@@ -39,7 +40,6 @@ class GeneralLocalDB<T> {
           methodName: "GeneralLocalDB createTable");
     }
   }
-
 
   Future<int> checkIfThereIsRowsInTable() async {
     try {
@@ -74,10 +74,12 @@ class GeneralLocalDB<T> {
 
   Future getLastItem() async {
     try {
-      var results = await DbHelper.db!.rawQuery('SELECT * FROM $tableName ORDER BY id DESC LIMIT 1');
+      var results = await DbHelper.db!
+          .rawQuery('SELECT * FROM $tableName ORDER BY id DESC LIMIT 1');
       return results;
     } catch (e) {
-      throw handleException(exception: e, navigation: false, methodName: "getLastItem");
+      throw handleException(
+          exception: e, navigation: false, methodName: "getLastItem");
     }
   }
 
@@ -105,7 +107,12 @@ class GeneralLocalDB<T> {
     }
   }
 
-  Future<List<T>> filter({required List whereArgs,required String where,String? orderBy,int? page,int limit = 25}) async {
+  Future<List<T>> filter(
+      {required List whereArgs,
+      required String where,
+      String? orderBy,
+      int? page,
+      int limit = 25}) async {
     try {
       List<Map<String, Object?>> result;
       if (page != null) {
@@ -115,7 +122,8 @@ class GeneralLocalDB<T> {
             offset: page * limit,
             limit: limit);
       } else {
-        result = await DbHelper.db!.query(tableName,where: where, whereArgs: whereArgs, orderBy: orderBy);
+        result = await DbHelper.db!.query(tableName,
+            where: where, whereArgs: whereArgs, orderBy: orderBy);
       }
       var dataFilter = result
           .map(
@@ -127,7 +135,6 @@ class GeneralLocalDB<T> {
       throw Exception(e.toString());
     }
   }
-
 
   Future getIdsOnly() async {
     try {
@@ -175,7 +182,7 @@ class GeneralLocalDB<T> {
                   : i + batchSize);
           for (var item in chunk) {
             // change
-            // _loadingItemsCountController.increaseLoadingItemCount();
+            _loadingItemsCountController.increaseLoadingItemCount();
             //===
             batch.insert(tableName, item.toJson(isRemotelyAdded: true),
                 conflictAlgorithm: ConflictAlgorithm.replace);
@@ -209,15 +216,14 @@ class GeneralLocalDB<T> {
       );
 
       return result;
-
     } catch (e) {
-
       throw handleException(
           exception: e, navigation: false, methodName: "GeneralLocalDB update");
     }
   }
 
-  Future<int> updateFields({required int id, required Map<String, dynamic> fields}) async {
+  Future<int> updateFields(
+      {required int id, required Map<String, dynamic> fields}) async {
     try {
       var result = await DbHelper.db!.update(
         tableName,
@@ -231,8 +237,7 @@ class GeneralLocalDB<T> {
       throw handleException(
           exception: e,
           navigation: false,
-          methodName: "GeneralLocalDB updateFields"
-      );
+          methodName: "GeneralLocalDB updateFields");
     }
   }
 
@@ -247,7 +252,8 @@ class GeneralLocalDB<T> {
       await DbHelper.db!.transaction((txn) async {
         for (var update in updates) {
           int id = update['id'];
-          var fields = quantityColumnName != null ? update['value'] : update['fields'];
+          var fields =
+              quantityColumnName != null ? update['value'] : update['fields'];
           int result = 0;
           if (quantityColumnName == null) {
             result = await txn.update(
@@ -269,15 +275,12 @@ class GeneralLocalDB<T> {
 
       return totalUpdated;
     } catch (e) {
-
       throw handleException(
           exception: e,
           navigation: false,
           methodName: "GeneralLocalDB updateFieldsBulk");
     }
   }
-
-
 
   Future<int> updateList(
       {required List recordsList,
