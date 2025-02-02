@@ -10,7 +10,7 @@ import 'package:pos_shared_preferences/models/account_tax/data/account_tax.dart'
 import 'package:pos_shared_preferences/models/authentication_data/user.dart';
 import 'package:pos_shared_preferences/models/customer_model.dart';
 import 'package:pos_shared_preferences/models/pos_categories_data/pos_category.dart';
-import 'package:pos_shared_preferences/models/pos_session_model.dart';
+import 'package:pos_shared_preferences/models/pos_session/posSession.dart';
 import 'package:pos_shared_preferences/models/printing/data/connected_printer.dart';
 import 'package:pos_shared_preferences/models/product_data/product.dart';
 import 'package:pos_shared_preferences/models/product_unit/data/product_unit.dart';
