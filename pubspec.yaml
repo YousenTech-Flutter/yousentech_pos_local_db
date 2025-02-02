@@ -1,6 +1,6 @@
 name: yousentech_pos_local_db
 description: "A new Flutter package project."
-version: 1.0.1
+version: 1.0.0
 homepage:
 
 environment:
@@ -13,7 +13,8 @@ dependencies:
   path_provider: ^2.1.3
   path: any
   sqflite_common_ffi: ^2.3.3
-  sqflite: ^2.0.0 
+  sqflite: ^2.0.0
+  get: ^4.6.6
   shared_widgets:
     git:
       url: https://github.com/YousenTech-Flutter/yousentech_pos_shared_widgets.git
@@ -22,7 +23,10 @@ dependencies:
     git:
       url: https://github.com/YousenTech-Flutter/yousentech_pos_shared_preferences.git
       ref: master
-
+  yousentech_pos_loading_synchronizing_data:
+    git:
+      url: https://github.com/YousenTech-Flutter/yousentech_pos_loading_synchronizing_data.git
+      ref: master
 dev_dependencies:
   flutter_test:
     sdk: flutter
