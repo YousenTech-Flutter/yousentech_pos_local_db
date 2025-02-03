@@ -1,25 +1,20 @@
 import 'package:get/get.dart';
 import 'package:shared_widgets/shared_widgets/handle_exception_helper.dart';
-// import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:yousentech_pos_loading_synchronizing_data/yousentech_pos_loading_synchronizing_data.dart';
+import 'package:yousentech_pos_loading_synchronizing_data/loading_sync/src/domain/loading_item_count_controller.dart';
 import 'package:yousentech_pos_local_db/src/db_helper.dart';
 
 class GeneralLocalDB<T> {
   static late String tableName;
   late T Function(Map<String, dynamic> data) fromJson;
   static GeneralLocalDB? _instance;
-
+  final LoadingItemsCountController _loadingItemsCountController = Get.put(LoadingItemsCountController());
   GeneralLocalDB._({required this.fromJson}) {
-    // change
     _loadingItemsCountController.resetLoadingItemCount();
-    //===
     tableName = T.toString().toLowerCase();
   }
-  // change
-  final LoadingItemsCountController _loadingItemsCountController =
-      Get.put(LoadingItemsCountController());
-  //===
+
+
   static GeneralLocalDB? getInstance<T>({required fromJsonFun}) {
     if (_instance != null && _instance!.getType() != T.toString()) {
       _instance = null;
@@ -180,10 +175,8 @@ class GeneralLocalDB<T> {
               i + batchSize > recordsList.length
                   ? recordsList.length
                   : i + batchSize);
-          for (var item in chunk) {
-            // change
+          for (var item in chunk) {            
             _loadingItemsCountController.increaseLoadingItemCount();
-            //===
             batch.insert(tableName, item.toJson(isRemotelyAdded: true),
                 conflictAlgorithm: ConflictAlgorithm.replace);
           }
