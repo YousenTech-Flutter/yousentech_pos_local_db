@@ -8,12 +8,12 @@ class GeneralLocalDB<T> {
   static late String tableName;
   late T Function(Map<String, dynamic> data) fromJson;
   static GeneralLocalDB? _instance;
-  final LoadingItemsCountController _loadingItemsCountController = Get.put(LoadingItemsCountController());
+  final LoadingItemsCountController _loadingItemsCountController =
+      Get.put(LoadingItemsCountController());
   GeneralLocalDB._({required this.fromJson}) {
     _loadingItemsCountController.resetLoadingItemCount();
     tableName = T.toString().toLowerCase();
   }
-
 
   static GeneralLocalDB? getInstance<T>({required fromJsonFun}) {
     if (_instance != null && _instance!.getType() != T.toString()) {
@@ -175,7 +175,7 @@ class GeneralLocalDB<T> {
               i + batchSize > recordsList.length
                   ? recordsList.length
                   : i + batchSize);
-          for (var item in chunk) {            
+          for (var item in chunk) {
             _loadingItemsCountController.increaseLoadingItemCount();
             batch.insert(tableName, item.toJson(isRemotelyAdded: true),
                 conflictAlgorithm: ConflictAlgorithm.replace);
@@ -275,10 +275,43 @@ class GeneralLocalDB<T> {
     }
   }
 
+  // Future<int> updateList(
+  //     {required List recordsList,
+  //     required String whereKey,
+  //     List<int>? orderId,
+  //     bool isupdateSpecific = false}) async {
+  //   int affectedRows = 0;
+
+  //   try {
+  //     return await DbHelper.db!.transaction((txn) async {
+  //       final Batch batch = txn.batch();
+
+  //       for (var item in recordsList) {
+  //         batch.update(
+  //             tableName,
+  //             isupdateSpecific
+  //                 ? item.specificToJson()
+  //                 : item.toJson(isRemotelyAdded: true),
+  //             where: '$whereKey = ?',
+  //             whereArgs: [
+  //               orderId != null ? orderId[recordsList.indexOf(item)] : item!.id
+  //             ]);
+  //       }
+  //       final List<dynamic> result = await batch.commit();
+  //       affectedRows = result.reduce((sum, element) => sum + element);
+  //       return affectedRows;
+  //     });
+  //   } catch (e) {
+  //     throw handleException(
+  //         exception: e,
+  //         navigation: false,
+  //         methodName: "GeneralLocalDB updateList");
+  //   }
+  // }
   Future<int> updateList(
       {required List recordsList,
       required String whereKey,
-      List<int>? orderId,
+      List<int>? ids,
       bool isupdateSpecific = false}) async {
     int affectedRows = 0;
 
@@ -286,15 +319,16 @@ class GeneralLocalDB<T> {
       return await DbHelper.db!.transaction((txn) async {
         final Batch batch = txn.batch();
 
-        for (var item in recordsList) {
+        for (int i = 0; i < recordsList.length; i++) {
           batch.update(
               tableName,
               isupdateSpecific
-                  ? item.specificToJson()
-                  : item.toJson(isRemotelyAdded: true),
+                  ? recordsList[i].specificToJson()
+                  : recordsList[i].toJson(isRemotelyAdded: true),
               where: '$whereKey = ?',
               whereArgs: [
-                orderId != null ? orderId[recordsList.indexOf(item)] : item!.id
+                // ids != null ? ids[recordsList.indexOf(item)] : item!.id
+                ids != null ? ids[i] : recordsList[i]!.id
               ]);
         }
         final List<dynamic> result = await batch.commit();
