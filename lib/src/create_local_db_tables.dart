@@ -48,7 +48,7 @@ class DBHelper {
         fromJson: SaleOrderInvoice.fromJson,
         structure: LocalDatabaseStructure.saleOrderStructure);
     await createDBTable<SaleOrderLine>(
-        fromJson: SaleOrderInvoice.fromJson,
+        fromJson: SaleOrderLine.fromJson,
         structure: LocalDatabaseStructure.saleOrderLineStructure);
     await createDBTable<ConnectedPrinter>(
         fromJson: ConnectedPrinter.fromJson,
@@ -113,8 +113,7 @@ class DBHelper {
     } else {}
   }
 
-  static Future<void> createDBTable<T>(
-      {required fromJson, required String structure}) async {
+  static Future<void> createDBTable<T>({required fromJson, required String structure}) async {
     try {
       GeneralLocalDB? generalLocalDBInstance =
           GeneralLocalDB.getInstance<T>(fromJsonFun: fromJson);
