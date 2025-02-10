@@ -13,7 +13,7 @@ dependencies:
   path_provider: ^2.1.3
   path: any
   sqflite_common_ffi: ^2.3.3
-  sqflite: ^2.0.0
+  sqflite: ^2.4.1
   get: ^4.6.6
   shared_widgets:
     git:
