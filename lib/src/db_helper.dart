@@ -5,9 +5,7 @@ import 'dart:typed_data';
 import 'package:path/path.dart';
 import 'dart:io' as io;
 import 'package:path_provider/path_provider.dart' as path_provider;
-import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-
 import 'create_local_db_tables.dart';
 
 class DbHelper {
@@ -19,6 +17,7 @@ class DbHelper {
   DbHelper._();
 
   static Future<DbHelper> getInstance() async {
+    sqfliteFfiInit();
     db = await _openDatabase();
     _instance ??= DbHelper._();
     return _instance!;
