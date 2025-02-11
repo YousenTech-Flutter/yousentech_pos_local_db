@@ -17,7 +17,6 @@ class DbHelper {
   DbHelper._();
 
   static Future<DbHelper> getInstance() async {
-    sqfliteFfiInit();
     db = await _openDatabase();
     _instance ??= DbHelper._();
     return _instance!;
