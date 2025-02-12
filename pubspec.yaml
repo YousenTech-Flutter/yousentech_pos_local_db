@@ -14,7 +14,8 @@ dependencies:
   path: any
   sqflite_common_ffi: ^2.3.3
   sqlite3_flutter_libs: ^0.5.30
-  sqflite_android: ^2.4.0
+  sqflite: ^2.0.0+3
+  # sqflite_android: ^2.4.0
   get: ^4.6.6
   shared_widgets:
     git:
