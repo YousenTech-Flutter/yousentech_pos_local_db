@@ -170,5 +170,6 @@ class LocalDatabaseStructure {
         printer_name TEXT,
         system_printer_name TEXT,
         paper_type TEXT,
-        printer_ip TEXT""";
+        printer_ip TEXT,
+        category_ids TEXT""";
 }
