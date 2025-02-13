@@ -103,7 +103,7 @@ class DBHelper {
   static deleteFile() async {
     final io.Directory directory =
         await path_provider.getApplicationSupportDirectory();
-    final filePath = path.join(directory.path, "databases", "mydb.db");
+    final filePath = path.join(directory.path, "databases", LocalDatabaseStructure.dbDefaultName);
     final file = File(filePath);
 
     if (file.existsSync()) {
