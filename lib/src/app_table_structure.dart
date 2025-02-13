@@ -1,4 +1,5 @@
 class LocalDatabaseStructure {
+  static String dbDefaultName = "mydb.db";
   static String productStructure = """
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         product_id INTEGER,
