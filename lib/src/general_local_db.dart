@@ -353,11 +353,24 @@ class GeneralLocalDB<T> {
       return await DbHelper.db!.transaction((txn) async {
         final Batch batch = txn.batch();
         index();
-        for (var item in recordsList) {
-          batch.update(tableName, item.toJson(isRemotelyAdded: true),
+        // for (var item in recordsList) {
+        //   batch.update(tableName, item.toJson(isRemotelyAdded: true),
+        //       where: 'order_id = ? and product_id = ?',
+        //       whereArgs: [orderId, item!.productId!.productId],
+        //       conflictAlgorithm: ConflictAlgorithm.replace);
+        // }
+        for (int i = 0; i < recordsList.length; i++) {
+          // batch.update(tableName, item.toJson(isRemotelyAdded: true),
+          //     where: 'order_id = ? and id = ?', whereArgs: [orderId, item!.id]);
+
+          batch.update(tableName, recordsList[i].toJson(isRemotelyAdded: true),
               where: 'order_id = ? and product_id = ?',
-              whereArgs: [orderId, item!.productId!.productId],
+              whereArgs: [orderId, recordsList[i]!.productId!.productId],
               conflictAlgorithm: ConflictAlgorithm.replace);
+          // batch.update(tableName, item.toJson(isRemotelyAdded: true),
+          //     where: 'order_id = ? and product_id = ?',
+          //     whereArgs: [orderId, item!.productId!.productId],
+          //     conflictAlgorithm: ConflictAlgorithm.replace);
         }
         final List<dynamic> result = await batch.commit();
         affectedRows = result.reduce((sum, element) => sum + element);
