@@ -53,6 +53,7 @@ class DbHelper {
       version: 38,
       onCreate: (Database dbx, int version) async {
         db = dbx;
+        await db!.execute('SELECT load_extension("json1");');
         await DBHelper.createDBTables();
       },
       onUpgrade: (Database dbx, int oldVersion, int newVersion) async {
