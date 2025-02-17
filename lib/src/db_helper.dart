@@ -54,7 +54,7 @@ class DbHelper {
         version: 38,
         onCreate: (Database dbx, int version) async {
           db = dbx;
-          var cursor = db!.rawQuery("SELECT sqlite_version()", null);
+          var cursor = await db!.rawQuery("SELECT sqlite_version()", null);
           print("cursor======$cursor");
           await DBHelper.createDBTables();
         },
