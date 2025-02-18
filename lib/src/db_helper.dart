@@ -54,8 +54,8 @@ class DbHelper {
         version: 38,
         onCreate: (Database dbx, int version) async {
           db = dbx;
-          var cursor = await db!.rawQuery("SELECT sqlite_version()", null);
-          print("cursor======$cursor");
+          // var cursor = await db!.rawQuery("SELECT sqlite_version()", null);
+          // print("cursor======$cursor");
           await DBHelper.createDBTables();
         },
         onUpgrade: (Database dbx, int oldVersion, int newVersion) async {
@@ -102,4 +102,14 @@ class DbHelper {
       }
     } catch (e) {}
   }
+ static Future<bool> testJsonExtract() async {
+  try {
+    // Execute a query to test json_extract
+    final result = await db!.rawQuery("SELECT json_extract('{\"name\": \"Alice\", \"age\": 30}', '\$.name') AS name;"
+    );
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
 }
