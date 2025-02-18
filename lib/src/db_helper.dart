@@ -1,5 +1,6 @@
 // ignore_for_file: empty_catches, unused_local_variable
 
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:path/path.dart';
@@ -23,12 +24,21 @@ class DbHelper {
   }
 
   static Future<io.Directory> dbPath() async {
+    if (Platform.isAndroid || Platform.isIOS) {
+      return (await path_provider.getDownloadsDirectory())!;
+    }
+
     return await path_provider.getApplicationSupportDirectory();
   }
 
   static Future<Database> _openDatabase() async {
-    final io.Directory appDocumentsDir =
-        await path_provider.getApplicationSupportDirectory();
+    final io.Directory appDocumentsDir;
+    if (Platform.isAndroid || Platform.isIOS) {
+      appDocumentsDir = (await path_provider.getDownloadsDirectory())!;
+    } else {
+      appDocumentsDir = await path_provider.getApplicationSupportDirectory();
+    }
+    // final io.Directory appDocumentsDir = await path_provider.getApplicationSupportDirectory();
     dataBasePath = join(appDocumentsDir.path, "databases",
         LocalDatabaseStructure.dbDefaultName);
     if (io.Platform.isWindows || io.Platform.isMacOS || io.Platform.isLinux) {
@@ -46,8 +56,8 @@ class DbHelper {
           },
         ),
       );
-     // if (io.Platform.isAndroid || io.Platform.isIOS)
-    } else  {
+      // if (io.Platform.isAndroid || io.Platform.isIOS)
+    } else {
       var databaseFactory = databaseFactoryFfi;
       return await openDatabase(
         dataBasePath!,
@@ -63,7 +73,6 @@ class DbHelper {
         },
       );
     }
-    
   }
 
   static Future<void> _migrateDatabase(
@@ -102,14 +111,15 @@ class DbHelper {
       }
     } catch (e) {}
   }
- static Future<bool> testJsonExtract() async {
-  try {
-    // Execute a query to test json_extract
-    final result = await db!.rawQuery("SELECT json_extract('{\"name\": \"Alice\", \"age\": 30}', '\$.name') AS name;"
-    );
-    return true;
-  } catch (e) {
-    return false;
+
+  static Future<bool> testJsonExtract() async {
+    try {
+      // Execute a query to test json_extract
+      final result = await db!.rawQuery(
+          "SELECT json_extract('{\"name\": \"Alice\", \"age\": 30}', '\$.name') AS name;");
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
-}
 }
