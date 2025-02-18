@@ -101,8 +101,14 @@ class DBHelper {
   }
 
   static deleteFile() async {
-    final io.Directory directory =
-        await path_provider.getApplicationSupportDirectory();
+    final io.Directory directory ;
+    if (Platform.isAndroid || Platform.isIOS) {
+      directory = (await path_provider.getDownloadsDirectory())!;
+    }
+    else{
+       directory = await path_provider.getApplicationSupportDirectory();
+    }
+    
     final filePath = path.join(directory.path, "databases", LocalDatabaseStructure.dbDefaultName);
     final file = File(filePath);
 
