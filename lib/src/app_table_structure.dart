@@ -32,7 +32,7 @@ class LocalDatabaseStructure {
   static String productUnitStructure = """
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT""";
-
+  
   static String customerStructure = """
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT,
@@ -44,14 +44,34 @@ class LocalDatabaseStructure {
       street TEXT,
       city TEXT,
       country_id TEXT,
-      zip TEXT,
-      street2 TEXT,
-      l10n_sa_additional_identification_number TEXT,
-      l10n_sa_edi_building_number TEXT,
+      Postal_code TEXT,
+      District TEXT,
+      additional_no TEXT,
+      building_no TEXT,
       other_seller_id TEXT,
       company_id INTEGER,
       is_company INTEGER
       """;
+  // static String customerStructure = """
+  //     id INTEGER PRIMARY KEY AUTOINCREMENT,
+  //     name TEXT,
+  //     email TEXT,
+  //     phone TEXT,
+  //     image_1920 TEXT,
+  //     vat TEXT,
+  //     customer_rank INTEGER,
+  //     street TEXT,
+  //     city TEXT,
+  //     country_id TEXT,
+  //     zip TEXT,
+  //     street2 TEXT,
+  //     l10n_sa_additional_identification_number TEXT,
+  //     l10n_sa_edi_building_number TEXT,
+  //     other_seller_id TEXT,
+  //     company_id INTEGER,
+  //     is_company INTEGER
+  //     """;
+      
 
   static String notificationStructure = """
           id INTEGER PRIMARY KEY AUTOINCREMENT,
