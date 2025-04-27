@@ -1,25 +1,34 @@
+
 import 'package:get/get.dart';
 import 'package:shared_widgets/shared_widgets/handle_exception_helper.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:yousentech_pos_loading_synchronizing_data/loading_sync/src/domain/loading_item_count_controller.dart';
-import 'package:yousentech_pos_local_db/src/db_helper.dart';
+import 'package:yousentech_pos_local_db/yousentech_pos_local_db.dart';
 
 class GeneralLocalDB<T> {
   static late String tableName;
   late T Function(Map<String, dynamic> data) fromJson;
   static GeneralLocalDB? _instance;
-  final LoadingItemsCountController _loadingItemsCountController =
-      Get.put(LoadingItemsCountController());
+
   GeneralLocalDB._({required this.fromJson}) {
     _loadingItemsCountController.resetLoadingItemCount();
     tableName = T.toString().toLowerCase();
   }
+
+  final LoadingItemsCountController _loadingItemsCountController =
+      Get.put(LoadingItemsCountController());
 
   static GeneralLocalDB? getInstance<T>({required fromJsonFun}) {
     if (_instance != null && _instance!.getType() != T.toString()) {
       _instance = null;
     }
     _instance = _instance ?? GeneralLocalDB<T>._(fromJson: fromJsonFun);
+
+
+
+    // if(_instance.runtimeType != T)
+    // _instance = _instance ?? GeneralLocalDB<T>._(fromJson: fromJsonFun);
+    // _instance = GeneralLocalDB<T>._(fromJson: fromJsonFun);
     return _instance;
   }
 
@@ -29,7 +38,7 @@ class GeneralLocalDB<T> {
       CREATE TABLE IF NOT EXISTS $tableName ( $structure )
       ''');
     } catch (e) {
-      return handleException(
+      return await handleException(
           exception: e,
           navigation: false,
           methodName: "GeneralLocalDB createTable");
@@ -42,7 +51,7 @@ class GeneralLocalDB<T> {
       int count = result.first['COUNT(*)'] as int;
       return count;
     } catch (e) {
-      throw handleException(
+      throw await handleException(
           exception: e,
           navigation: false,
           methodName: "GeneralLocalDB checkIfThereIsRowsInTable");
@@ -62,19 +71,19 @@ class GeneralLocalDB<T> {
 
       return result.map((e) => fromJson(e)).toList();
     } catch (e) {
-      throw handleException(
+      throw await handleException(
           exception: e, navigation: false, methodName: "GeneralLocalDB index");
+
+      // throw Exception(e.toString());
     }
   }
 
   Future getLastItem() async {
     try {
-      var results = await DbHelper.db!
-          .rawQuery('SELECT * FROM $tableName ORDER BY id DESC LIMIT 1');
+      var results = await DbHelper.db!.rawQuery('SELECT * FROM $tableName ORDER BY id DESC LIMIT 1');
       return results;
     } catch (e) {
-      throw handleException(
-          exception: e, navigation: false, methodName: "getLastItem");
+      throw await handleException(exception: e, navigation: false, methodName: "getLastItem");
     }
   }
 
@@ -85,7 +94,7 @@ class GeneralLocalDB<T> {
 
       return results[0]["count"] as int;
     } catch (e) {
-      throw handleException(
+      throw await handleException(
           exception: e, navigation: false, methodName: "count");
     }
   }
@@ -97,28 +106,24 @@ class GeneralLocalDB<T> {
           .query(tableName, limit: 1, where: '$whereArg = ?', whereArgs: [val]);
       return result.isNotEmpty ? fromJson(result.first) : "Empty Result";
     } catch (e) {
-      throw handleException(
+      throw  await handleException(
           exception: e, navigation: false, methodName: "GeneralLocalDB show");
     }
   }
 
-  Future<List<T>> filter(
-      {required List whereArgs,
-      required String where,
-      String? orderBy,
-      int? page,
-      int limit = 25}) async {
+  Future<List<T>> filter({required List whereArgs,required String where,String? orderBy,int? page,int limit = 25}) async {
     try {
       List<Map<String, Object?>> result;
       if (page != null) {
         result = await DbHelper.db!.query(tableName,
             where: where,
             whereArgs: whereArgs,
+            // orderBy: orderBy,
             offset: page * limit,
             limit: limit);
+      
       } else {
-        result = await DbHelper.db!.query(tableName,
-            where: where, whereArgs: whereArgs, orderBy: orderBy);
+        result = await DbHelper.db!.query(tableName,where: where, whereArgs: whereArgs, orderBy: orderBy);
       }
       var dataFilter = result
           .map(
@@ -131,6 +136,7 @@ class GeneralLocalDB<T> {
     }
   }
 
+
   Future getIdsOnly() async {
     try {
       var query = await DbHelper.db!.rawQuery('''
@@ -141,7 +147,7 @@ class GeneralLocalDB<T> {
           .map((e) => e[tableName != 'product' ? 'id' : 'product_id'])
           .toList();
     } catch (e) {
-      throw handleException(
+      throw  await handleException(
           exception: e,
           navigation: false,
           methodName: "GeneralLocalDB getIdsOnly");
@@ -158,13 +164,13 @@ class GeneralLocalDB<T> {
               : obj.toJson(isRemotelyAdded: isRemotelyAdded),
           conflictAlgorithm: ConflictAlgorithm.replace);
     } catch (e) {
-      throw handleException(
+      throw await handleException(
           exception: e, navigation: false, methodName: "GeneralLocalDB create");
     }
   }
 
   Future<int> createList({required List recordsList, Transaction? txn}) async {
-    const batchSize = 10;
+    const batchSize = 10; // Adjust this size as needed
     return await DbHelper.db!.transaction((txn) async {
       int affectedRows = 0;
       try {
@@ -180,12 +186,17 @@ class GeneralLocalDB<T> {
             batch.insert(tableName, item.toJson(isRemotelyAdded: true),
                 conflictAlgorithm: ConflictAlgorithm.replace);
           }
+          // for (var item in chunk) {
+          //   _loadingItemsCountController.increaseLoadingItemCount();
+          //   batch.insert(tableName, item.toJson(isRemotelyAdded: true));
+          // }
+
           final List<dynamic> result = await batch.commit();
           affectedRows = result.reduce((sum, element) => sum + element);
         }
         return affectedRows;
       } catch (e) {
-        throw handleException(
+        throw  await handleException(
             exception: e,
             navigation: false,
             methodName: "GeneralLocalDB createList");
@@ -197,6 +208,7 @@ class GeneralLocalDB<T> {
       {required dynamic id,
       required obj,
       required String whereField,
+      // bool isRemotelyAdded = false
       bool isRemotelyAdded = true}) async {
     try {
       var result = await DbHelper.db!.update(
@@ -209,14 +221,15 @@ class GeneralLocalDB<T> {
       );
 
       return result;
+
     } catch (e) {
-      throw handleException(
+
+      throw await handleException(
           exception: e, navigation: false, methodName: "GeneralLocalDB update");
     }
   }
 
-  Future<int> updateFields(
-      {required int id, required Map<String, dynamic> fields}) async {
+  Future<int> updateFields({required int id, required Map<String, dynamic> fields}) async {
     try {
       var result = await DbHelper.db!.update(
         tableName,
@@ -227,10 +240,13 @@ class GeneralLocalDB<T> {
 
       return result;
     } catch (e) {
-      throw handleException(
+
+      // Handle the exception properly (you can modify this according to your needs)
+      throw await handleException(
           exception: e,
           navigation: false,
-          methodName: "GeneralLocalDB updateFields");
+          methodName: "GeneralLocalDB updateFields"
+      );
     }
   }
 
@@ -245,8 +261,8 @@ class GeneralLocalDB<T> {
       await DbHelper.db!.transaction((txn) async {
         for (var update in updates) {
           int id = update['id'];
-          var fields =
-              quantityColumnName != null ? update['value'] : update['fields'];
+          // Map<String, dynamic> fields = quantityColumnName != null ? update['value'] : update['fields'];
+          var fields = quantityColumnName != null ? update['value'] : update['fields'];
           int result = 0;
           if (quantityColumnName == null) {
             result = await txn.update(
@@ -268,46 +284,16 @@ class GeneralLocalDB<T> {
 
       return totalUpdated;
     } catch (e) {
-      throw handleException(
+
+      throw await handleException(
           exception: e,
           navigation: false,
           methodName: "GeneralLocalDB updateFieldsBulk");
     }
   }
 
-  // Future<int> updateList(
-  //     {required List recordsList,
-  //     required String whereKey,
-  //     List<int>? orderId,
-  //     bool isupdateSpecific = false}) async {
-  //   int affectedRows = 0;
 
-  //   try {
-  //     return await DbHelper.db!.transaction((txn) async {
-  //       final Batch batch = txn.batch();
 
-  //       for (var item in recordsList) {
-  //         batch.update(
-  //             tableName,
-  //             isupdateSpecific
-  //                 ? item.specificToJson()
-  //                 : item.toJson(isRemotelyAdded: true),
-  //             where: '$whereKey = ?',
-  //             whereArgs: [
-  //               orderId != null ? orderId[recordsList.indexOf(item)] : item!.id
-  //             ]);
-  //       }
-  //       final List<dynamic> result = await batch.commit();
-  //       affectedRows = result.reduce((sum, element) => sum + element);
-  //       return affectedRows;
-  //     });
-  //   } catch (e) {
-  //     throw handleException(
-  //         exception: e,
-  //         navigation: false,
-  //         methodName: "GeneralLocalDB updateList");
-  //   }
-  // }
   Future<int> updateList(
       {required List recordsList,
       required String whereKey,
@@ -336,12 +322,13 @@ class GeneralLocalDB<T> {
         return affectedRows;
       });
     } catch (e) {
-      throw handleException(
+      throw await handleException(
           exception: e,
           navigation: false,
           methodName: "GeneralLocalDB updateList");
     }
   }
+  
 
   Future<int> updateListSaleOrderList(
       {required List recordsList,
@@ -354,19 +341,14 @@ class GeneralLocalDB<T> {
         final Batch batch = txn.batch();
         index();
         // for (var item in recordsList) {
-        //   batch.update(tableName, item.toJson(isRemotelyAdded: true),
-        //       where: 'order_id = ? and product_id = ?',
-        //       whereArgs: [orderId, item!.productId!.productId],
-        //       conflictAlgorithm: ConflictAlgorithm.replace);
-        // }
         for (int i = 0; i < recordsList.length; i++) {
           // batch.update(tableName, item.toJson(isRemotelyAdded: true),
           //     where: 'order_id = ? and id = ?', whereArgs: [orderId, item!.id]);
-
           batch.update(tableName, recordsList[i].toJson(isRemotelyAdded: true),
               where: 'order_id = ? and product_id = ?',
               whereArgs: [orderId, recordsList[i]!.productId!.productId],
               conflictAlgorithm: ConflictAlgorithm.replace);
+
           // batch.update(tableName, item.toJson(isRemotelyAdded: true),
           //     where: 'order_id = ? and product_id = ?',
           //     whereArgs: [orderId, item!.productId!.productId],
@@ -378,7 +360,7 @@ class GeneralLocalDB<T> {
         return affectedRows;
       });
     } catch (e) {
-      throw handleException(
+      throw await handleException(
           exception: e,
           navigation: false,
           methodName: "GeneralLocalDB updateList");
@@ -418,10 +400,11 @@ class GeneralLocalDB<T> {
         return affectedRows;
       });
     } catch (e) {
-      throw handleException(
+      throw  await handleException(
           exception: e,
           navigation: false,
           methodName: "GeneralLocalDB deleteList");
+      // return affectedRows;
     }
   }
 
@@ -447,6 +430,15 @@ class GeneralLocalDB<T> {
           exception: "No match found",
           navigation: false,
           methodName: "GeneralLocalDB getType");
+    }
+  }
+
+    Future<int> countInvoice({required String whereKey}) async {
+    try {
+      var results = await DbHelper.db!.rawQuery('SELECT count(id) as count FROM $tableName WHERE $whereKey ');
+      return results[0]["count"] as int;
+    } catch (e) {
+      throw await handleException(exception: e, navigation: false, methodName: "countInvoice");
     }
   }
 }

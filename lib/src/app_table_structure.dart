@@ -1,5 +1,6 @@
 class LocalDatabaseStructure {
   static String dbDefaultName = "mydb.db";
+  //odoo_id INTEGER,
   static String productStructure = """
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         product_id INTEGER,
@@ -8,12 +9,12 @@ class LocalDatabaseStructure {
         product_tmpl_id INTEGER,
         pos_available INTEGER,
         uom_id INTEGER,
-        default_code TEXT,
         so_pos_categ_id INTEGER,
         categ_id TEXT,
         barcode TEXT,
         unit_price REAL,
         currency TEXT,
+        default_code TEXT,
         image TEXT,
         quick_menu_availability INTEGER,
         available_qty REAL,
@@ -29,10 +30,12 @@ class LocalDatabaseStructure {
         parent_name TEXT,
         discount_value REAL,
         discount_control INTEGER""";
+  // name TEXT""";
   static String productUnitStructure = """
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT""";
-  
+
+// id INTEGER PRIMARY KEY AUTOINCREMENT,
   static String customerStructure = """
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT,
@@ -47,32 +50,14 @@ class LocalDatabaseStructure {
       Postal_code TEXT,
       District TEXT,
       additional_no TEXT,
+      l10n_sa_edi_plot_identification TEXT,
       building_no TEXT,
       other_seller_id TEXT,
       company_id INTEGER,
       is_company INTEGER
       """;
-  // static String customerStructure = """
-  //     id INTEGER PRIMARY KEY AUTOINCREMENT,
-  //     name TEXT,
-  //     email TEXT,
-  //     phone TEXT,
-  //     image_1920 TEXT,
-  //     vat TEXT,
-  //     customer_rank INTEGER,
-  //     street TEXT,
-  //     city TEXT,
-  //     country_id TEXT,
-  //     zip TEXT,
-  //     street2 TEXT,
-  //     l10n_sa_additional_identification_number TEXT,
-  //     l10n_sa_edi_building_number TEXT,
-  //     other_seller_id TEXT,
-  //     company_id INTEGER,
-  //     is_company INTEGER
-  //     """;
-      
 
+// id INTEGER PRIMARY KEY AUTOINCREMENT,
   static String notificationStructure = """
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           subscription_detail_id INTEGER,
@@ -121,6 +106,7 @@ class LocalDatabaseStructure {
         pos_preferred_payment_method INTEGER,
         type TEXT""";
 
+  // id INTEGER PRIMARY KEY AUTOINCREMENT,
   static String saleOrderStructure = """
         id INTEGER PRIMARY KEY,
         invoice_name TEXT,
@@ -161,7 +147,9 @@ class LocalDatabaseStructure {
         FOREIGN KEY(user_id) REFERENCES user(id),
         FOREIGN KEY(session_number) REFERENCES possession(id)
         """;
+  // FOREIGN KEY(original_invoice_id) REFERENCES saleorder(id) ON DELETE SET NULL
 
+  // id INTEGER PRIMARY KEY AUTOINCREMENT,
   static String saleOrderLineStructure = """
         id INTEGER PRIMARY KEY,
         product_id INTEGER,
@@ -192,4 +180,21 @@ class LocalDatabaseStructure {
         paper_type TEXT,
         printer_ip TEXT,
         category_ids TEXT""";
+
+  // static String paymentStructure = """
+  //       id INTEGER PRIMARY KEY,
+  //       name TEXT""";
+
+  //
+  // static String itemHistoryStructure = """
+  //     id INTEGER PRIMARY KEY AUTOINCREMENT,
+  //     is_added INTEGER,
+  //     type_name TEXT,
+  //     product_id INTEGER,
+  //     customer_id INTEGER,
+  //     pos_category_id INTEGER,
+  //     FOREIGN KEY (product_id) REFERENCES product(id),
+  //     FOREIGN KEY (customer_id) REFERENCES customer(id),
+  //     FOREIGN KEY (pos_category_id) REFERENCES poscategory(id)
+  //     """;
 }
