@@ -54,7 +54,8 @@ class LocalDatabaseStructure {
       building_no TEXT,
       other_seller_id TEXT,
       company_id INTEGER,
-      is_company INTEGER
+      is_company INTEGER,
+      pay_type  TEXT
       """;
 
 // id INTEGER PRIMARY KEY AUTOINCREMENT,
