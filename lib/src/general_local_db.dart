@@ -441,4 +441,12 @@ class GeneralLocalDB<T> {
       throw await handleException(exception: e, navigation: false, methodName: "countInvoice");
     }
   }
+
+  Future<bool> checkIfTableExists() async {
+    final result = await DbHelper.db!.rawQuery(
+      "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
+      [tableName],
+    );
+    return result.isNotEmpty;
+  }
 }
