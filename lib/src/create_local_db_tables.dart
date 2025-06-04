@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:pos_shared_preferences/models/account_journal/data/account_journal.dart';
 import 'package:pos_shared_preferences/models/account_tax/data/account_tax.dart';
 import 'package:pos_shared_preferences/models/authentication_data/user.dart';
+import 'package:pos_shared_preferences/models/category_sale_price.dart';
 import 'package:pos_shared_preferences/models/customer_model.dart';
 import 'package:pos_shared_preferences/models/pos_categories_data/pos_category.dart';
 import 'package:pos_shared_preferences/models/pos_session/posSession.dart';
@@ -17,6 +18,7 @@ import 'package:pos_shared_preferences/models/product_unit/data/product_unit.dar
 import 'package:pos_shared_preferences/models/remote_support_ticket.dart';
 import 'package:pos_shared_preferences/models/sale_order.dart';
 import 'package:pos_shared_preferences/models/sale_order_line.dart';
+import 'package:pos_shared_preferences/models/user_sale_price.dart';
 import 'package:shared_widgets/shared_widgets/handle_exception_helper.dart';
 import 'package:yousentech_pos_local_db/src/app_table_structure.dart';
 import 'package:yousentech_pos_local_db/src/general_local_db.dart';
@@ -59,6 +61,14 @@ class DBHelper {
     await createDBTable<User>(
         fromJson: User.fromJson,
         structure: LocalDatabaseStructure.userStructure);
+    
+    await createDBTable<UserSalePrice>(
+        fromJson: UserSalePrice.fromJson,
+        structure: LocalDatabaseStructure.userSalePriceStructure);
+    await  createDBTable<CategorySalePrice>(
+        fromJson: CategorySalePrice.fromJson,
+        structure: LocalDatabaseStructure.categorySalePriceStructure);
+
   }
 
   static dropDBData({isDeleteBasicData = false}) async {
@@ -77,6 +87,11 @@ class DBHelper {
     await deleteTableRows<AccountJournal>(fromJson: AccountJournal.fromJson);
     await deleteTableRows<ConnectedPrinter>(
         fromJson: ConnectedPrinter.fromJson);
+
+    
+    await deleteTableRows<UserSalePrice>(fromJson: UserSalePrice.fromJson);
+    await deleteTableRows<CategorySalePrice>(
+        fromJson: CategorySalePrice.fromJson);
   }
 
   static dropDBTable({isDeleteBasicData = false}) async {
@@ -98,6 +113,10 @@ class DBHelper {
     await dropTable<ConnectedPrinter>(fromJson: ConnectedPrinter.fromJson);
 
     await dropTable<AccountJournal>(fromJson: AccountJournal.fromJson);
+
+
+    await dropTable<UserSalePrice>(fromJson: UserSalePrice.fromJson);
+    await dropTable<CategorySalePrice>(fromJson: CategorySalePrice.fromJson);
   }
 
   static deleteFile() async {
@@ -106,7 +125,7 @@ class DBHelper {
       directory = (await path_provider.getDownloadsDirectory())!;
     }
     else{
-       directory = await path_provider.getApplicationSupportDirectory();
+      directory = await path_provider.getApplicationSupportDirectory();
     }
     
     final filePath = path.join(directory.path, "databases", LocalDatabaseStructure.dbDefaultName);
