@@ -33,6 +33,7 @@ class LocalDatabaseStructure {
       pos_available INTEGER,
       uom_id INTEGER,
       so_pos_categ_id INTEGER,
+      so_pos_categ_name TEXT,
       categ_id TEXT,
       barcode TEXT,
       unit_price REAL,
@@ -45,7 +46,6 @@ class LocalDatabaseStructure {
       record_hash TEXT,
       discount_value REAL,
       discount_control INTEGER,
-      
       standard_price REAL,
       maximum_price REAL,
       minimum_price REAL,
@@ -178,6 +178,8 @@ static String customerStructure = """
             original_invoice_id TEXT,
             payment_ids TEXT,
             save_invoice_as_draft_for_process INTEGER,
+            partner_mobile TEXT,
+            partner_email TEXT,
             FOREIGN KEY(user_id) REFERENCES user(id),
             FOREIGN KEY(session_number) REFERENCES possession(id)
             """;
@@ -251,4 +253,13 @@ static String customerStructure = """
   //     FOREIGN KEY (customer_id) REFERENCES customer(id),
   //     FOREIGN KEY (pos_category_id) REFERENCES poscategory(id)
   //     """;
+
+
+        static String posPrinterStructure = """
+            id INTEGER PRIMARY KEY,
+            name TEXT,
+            ip_address TEXT,
+            pos_category_ids TEXT,
+            printing_mode TEXT,
+            disable_printing INTEGER""";
 }
