@@ -56,7 +56,7 @@ class LocalDatabaseStructure {
       price_fields_readonly INTEGER
       """;
 
-static String posCategoryStructure = """
+  static String posCategoryStructure = """
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT,
       parent_id INTEGER,
@@ -64,12 +64,12 @@ static String posCategoryStructure = """
       discount_value REAL,
       discount_control INTEGER""";
   // name TEXT""";
-      static String productUnitStructure = """
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT""";
+  static String productUnitStructure = """
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT""";
 
 // id INTEGER PRIMARY KEY AUTOINCREMENT,
-static String customerStructure = """
+  static String customerStructure = """
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT,
       email TEXT,
@@ -92,7 +92,7 @@ static String customerStructure = """
       """;
 
 // id INTEGER PRIMARY KEY AUTOINCREMENT,
-      static String notificationStructure = """
+  static String notificationStructure = """
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             subscription_detail_id INTEGER,
             ticket_reply TEXT,
@@ -103,13 +103,13 @@ static String customerStructure = """
             pos_id INTEGER,
             is_read INTEGER
       """;
-      static String userStructure = """
+  static String userStructure = """
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT,
             password TEXT,
             pincode TEXT""";
 
-      static String posSessionStructure = """
+  static String posSessionStructure = """
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             pos_id INTEGER,
             user_id INTEGER,
@@ -127,13 +127,13 @@ static String customerStructure = """
             total_sales REAL
             """;
 
-      static String accountTaxStructure = """
+  static String accountTaxStructure = """
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT,
             amount REAL,
             price_include INTEGER""";
 
-      static String accountJournalStructure = """
+  static String accountJournalStructure = """
             id INTEGER PRIMARY KEY,
             name TEXT,
             is_default_journal INTEGER,
@@ -141,7 +141,7 @@ static String customerStructure = """
             type TEXT""";
 
   // id INTEGER PRIMARY KEY AUTOINCREMENT,
-      static String saleOrderStructure = """
+  static String saleOrderStructure = """
             id INTEGER PRIMARY KEY,
             invoice_name TEXT,
             partner_id INTEGER,
@@ -186,7 +186,7 @@ static String customerStructure = """
   // FOREIGN KEY(original_invoice_id) REFERENCES saleorder(id) ON DELETE SET NULL
 
   // id INTEGER PRIMARY KEY AUTOINCREMENT,
-      static String saleOrderLineStructure = """
+  static String saleOrderLineStructure = """
             id INTEGER PRIMARY KEY,
             product_id INTEGER,
             name TEXT,
@@ -204,12 +204,13 @@ static String customerStructure = """
             type_of_discount TEXT,
             discount_as_percentage REAL,
             total_discount REAL,
+            category_note_ids TEXT,
             FOREIGN KEY(product_id) REFERENCES product(id),
             FOREIGN KEY(product_uom) REFERENCES productunit(id),
             FOREIGN KEY(order_id) REFERENCES saleorderinvoice(id)
             """;
 
-      static String appConnectedPrinters = """
+  static String appConnectedPrinters = """
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             printer_name TEXT,
             system_printer_name TEXT,
@@ -217,7 +218,7 @@ static String customerStructure = """
             printer_ip TEXT,
             category_ids TEXT""";
 
-      static String userSalePriceStructure = """
+  static String userSalePriceStructure = """
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             odoo_id INTEGER,
             user_id INTEGER,
@@ -227,7 +228,7 @@ static String customerStructure = """
             minimum_percentage REAL
       """;
 
-      static String categorySalePriceStructure = """
+  static String categorySalePriceStructure = """
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             odoo_id INTEGER,
             user_id INTEGER,
@@ -254,8 +255,7 @@ static String customerStructure = """
   //     FOREIGN KEY (pos_category_id) REFERENCES poscategory(id)
   //     """;
 
-
-        static String posPrinterStructure = """
+  static String posPrinterStructure = """
             id INTEGER PRIMARY KEY,
             name TEXT,
             ip_address TEXT,
