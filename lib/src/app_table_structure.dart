@@ -261,5 +261,6 @@ class LocalDatabaseStructure {
             ip_address TEXT,
             pos_category_ids TEXT,
             printing_mode TEXT,
+            is_customer_printer INTEGER,
             disable_printing INTEGER""";
 }
