@@ -262,5 +262,7 @@ class LocalDatabaseStructure {
             pos_category_ids TEXT,
             printing_mode TEXT,
             is_customer_printer INTEGER,
+            pos_setting_id INTEGER,
+            auto_network_printer INTEGER,
             disable_printing INTEGER""";
 }
