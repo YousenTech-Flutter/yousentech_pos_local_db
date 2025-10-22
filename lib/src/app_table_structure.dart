@@ -62,6 +62,7 @@ class LocalDatabaseStructure {
       parent_id INTEGER,
       parent_name TEXT,
       discount_value REAL,
+      notes TEXT,
       discount_control INTEGER""";
   // name TEXT""";
   static String productUnitStructure = """
