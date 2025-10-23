@@ -53,7 +53,8 @@ class LocalDatabaseStructure {
       from_product_cost INTEGER,
       pro_cost_incrse_percentage REAL,
       product_price_readonly INTEGER,
-      price_fields_readonly INTEGER
+      price_fields_readonly INTEGER,
+      category_note_ids TEXT
       """;
 
   static String posCategoryStructure = """
