@@ -182,6 +182,7 @@ class LocalDatabaseStructure {
             save_invoice_as_draft_for_process INTEGER,
             partner_mobile TEXT,
             partner_email TEXT,
+            is_take_away_order INTEGER,
             FOREIGN KEY(user_id) REFERENCES user(id),
             FOREIGN KEY(session_number) REFERENCES possession(id)
             """;
