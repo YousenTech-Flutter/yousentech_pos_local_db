@@ -193,7 +193,7 @@ class LocalDatabaseStructure {
             id INTEGER PRIMARY KEY,
             product_id INTEGER,
             name TEXT,
-            product_uom_qty INTEGER,
+            product_uom_qty REAL,
             product_uom INTEGER,
             discount REAL,
             price_unit REAL,
